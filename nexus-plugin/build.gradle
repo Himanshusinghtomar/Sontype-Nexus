@@ -1,0 +1,47 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+group = 'com.dependencie'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+// Register the plugin
+gradlePlugin {
+    plugins {
+        backendPublisher {
+            id = 'com.dependencie.nexusplugin'
+            implementationClass = 'com.dependencie.nexusplugin.BackendPublisherPlugin'
+        }
+    }
+}
+
+// Only configure the repository; don't define `publications` manually
+publishing {
+    repositories {
+        maven {
+            name = "nexusSnapshots"
+            url = uri("http://18.214.100.187:8081/repository/maven-snapshots/")
+            allowInsecureProtocol = true
+            credentials {
+                username = "admin"
+                password = "12345"
+            }
+        }
+    }
+}
